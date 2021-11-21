@@ -88,16 +88,16 @@ def main():
 
     # Insert loader
     if args.loader:
-        print 'Inserting loader'
+        print('Inserting loader')
         tig.add_patch(LOADER_ADDR, MULTI_LOADER)
         tig.add_patch(ZELDA_FREE, pack_int(LOADER_ADDR))
 
     if args.patch is not None:
-        print 'Inserting %u patches' % (len(args.patch))
+        print('Inserting %u patches') % (len(args.patch))
         for patch in args.patch:
             patch_target = int(patch[0], 16)
             patch_payload = binascii.unhexlify(patch[1])
-            print patch
+            print(patch)
             tig.add_patch(patch_target, patch_payload)
 
     tag_info = tig.compile()
@@ -106,7 +106,7 @@ def main():
     total_len = 0x660 + nes_rom_len + banner_len + tag_info_len
 
     new_count = max(1, block_count(total_len, BLOCK_SZ))
-    print 'Need %u blocks to contain ROM GCI' % (new_count)
+    print('Need %u blocks to contain ROM GCI' % (new_count))
 
     blank_gci['m_gci_header']['Filename'] = 'DobutsunomoriP_F_%s' % (
         (args.game_name[0:4]).upper())
@@ -118,11 +118,11 @@ def main():
     new_data_tmp[0:0x640] = old_data[0][0:0x640]
 
     # Set description to name of the game
-    new_data_tmp[comments_addr+32:comments_addr+64] = ('%s ] ROM ' % (
-        args.game_name)).ljust(32)
+    new_data_tmp[comments_addr+32:comments_addr+64] = bytes('%s ] ROM ' % (
+        args.game_name).ljust(32), 'ascii')
 
     # Set title of game as shown in game menu
-    new_data_tmp[0x640:0x650] = 'ZZ%s' % (args.game_name.ljust(16))
+    new_data_tmp[0x640:0x650] = bytes('ZZ%s' % (args.game_name.ljust(16)), 'ascii')
 
     # Uncompressed ROM size (0 for none) - divided by 16
     # Force it to be 0 so the ROM data isn't run
@@ -171,10 +171,8 @@ def main():
     # Calculate checksum
     checkbyte = calcsum_byte(new_data_tmp, verbose=True)
     new_data_tmp[(BLOCK_SZ * new_count)-1] = checkbyte
-
-    # Save new GCI
-    blank_gci['m_save_data'] = str(new_data_tmp)
-
+    
+    blank_gci['m_save_data'] = [bytes(new_data_tmp)]
     with open(args.out_file, 'wb') as outfile:
         data = gci.write_gci(blank_gci)
         outfile.write(data)

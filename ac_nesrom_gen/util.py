@@ -41,8 +41,8 @@ def calcsum_byte(data, verbose=False):
     checkbyte = (256 - (checksum & 0xFF)) & 0xFF
 
     if verbose:
-        print 'Checksum: 0x%08x' % (checksum)
-        print 'Check byte: 0x%02x' % (checkbyte)
+        print('Checksum: 0x%08x' % (checksum))
+        print('Check byte: 0x%02x' % (checkbyte))
 
     return checkbyte
 

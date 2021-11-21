@@ -1,6 +1,6 @@
 -e git+https://github.com/sopoforic/cgrr.git@ac2a8892745603ec36679056a1afefb6ce401a16#egg=cgrr
 -e git+https://github.com/jamchamb/cgrr-gamecube#egg=cgrr-gamecube
 enum34==1.1.6
-Pillow==5.1.0
+Pillow==8.4.0
 ply==3.11
 PyYAML==3.13

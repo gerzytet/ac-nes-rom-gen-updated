@@ -4,7 +4,7 @@ import struct
 MAX_PATCH_SIZE = 251
 
 
-def tag_header(tag, size):
+def tag_header(tag: bytes, size):
     return struct.pack('>3sB', tag, size)
 
 
@@ -18,11 +18,11 @@ class TagInfoGenerator:
         self.tags.append(tag)
 
     def __add_begin(self):
-        begin = tag_header('ZZZ', 0)
+        begin = tag_header(b'ZZZ', 0)
         self.__add_tag(begin)
 
     def __add_end(self):
-        end = tag_header('END', 0)
+        end = tag_header(b'END', 0)
         self.__add_tag(end)
 
     def add_patch(self, target_addr, payload):
@@ -42,7 +42,7 @@ class TagInfoGenerator:
                                off_high,
                                len(payload),
                                off_low) + payload
-        tag_head = tag_header('PAT', len(tag_data))
+        tag_head = tag_header(b'PAT', len(tag_data))
 
         self.__add_tag(tag_head + tag_data)
 
@@ -50,6 +50,7 @@ class TagInfoGenerator:
         """Use multiple PAT tags to insert a patch larger than
         251 bytes."""
 
+        payload = bytes(payload, 'ascii')
         for pos in range(0, len(payload), MAX_PATCH_SIZE):
             self.add_patch(
                 target_addr + pos,
@@ -58,4 +59,4 @@ class TagInfoGenerator:
 
     def compile(self):
         self.__add_end()
-        return ''.join(self.tags)
+        return b''.join(self.tags)
