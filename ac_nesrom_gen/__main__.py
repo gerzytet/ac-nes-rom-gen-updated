@@ -118,8 +118,8 @@ def main():
     new_data_tmp[0:0x640] = old_data[0][0:0x640]
 
     # Set description to name of the game
-    new_data_tmp[comments_addr+32:comments_addr+64] = bytes('%s ] ROM ' % (
-        args.game_name).ljust(32), 'ascii')
+    new_data_tmp[comments_addr+32:comments_addr+64] = bytes(('%s ] ROM ' % (
+        args.game_name)).ljust(32), 'ascii')
 
     # Set title of game as shown in game menu
     new_data_tmp[0x640:0x650] = bytes('ZZ%s' % (args.game_name.ljust(16)), 'ascii')
